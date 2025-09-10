@@ -3,55 +3,24 @@ package com.example.lab_week_03
 import android.os.Bundle
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowCompat
-import androidx.core.view.WindowInsetsCompat
+import androidx.fragment.app.Fragment
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : AppCompatActivity(), CoffeeListFragment.OnCoffeeSelectedListener {
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        enableEdgeToEdge()
         setContentView(R.layout.activity_main)
-
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
-            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
-            insets
-        }
-
-        Log.d(TAG, "onCreate")
+        Log.d(TAG, "onCreate MainActivity")
     }
 
-    override fun onStart() {
-        super.onStart()
-        Log.d(TAG, "onStart")
-    }
-
-    override fun onResume() {
-        super.onResume()
-        Log.d(TAG, "onResume")
-    }
-
-    override fun onPause() {
-        super.onPause()
-        Log.d(TAG, "onPause")
-    }
-
-    override fun onStop() {
-        super.onStop()
-        Log.d(TAG, "onStop")
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        Log.d(TAG, "onDestroy")
+    override fun onCoffeeSelected(coffee: String) {
+        Log.d(TAG, "Coffee selected: $coffee")
+        val detailFragment =
+            supportFragmentManager.findFragmentById(R.id.fragment_coffee_detail) as CoffeeDetailFragment
+        detailFragment.updateCoffeeDetail(coffee)
     }
 
     companion object {
         private const val TAG = "MainActivity"
     }
-}
-
-fun AppCompatActivity.enableEdgeToEdge() {
-    WindowCompat.setDecorFitsSystemWindows(window, false)
 }

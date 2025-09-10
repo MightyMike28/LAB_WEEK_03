@@ -9,6 +9,7 @@ import android.view.View
 import android.view.ViewGroup
 
 class MainFragment : Fragment() {
+    // TODO: Rename and change types of parameters if needed
     private var param1: String? = null
     private var param2: String? = null
 
