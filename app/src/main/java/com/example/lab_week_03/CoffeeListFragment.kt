@@ -2,65 +2,48 @@ package com.example.lab_week_03
 
 import android.content.Context
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.AdapterView
-import android.widget.ArrayAdapter
-import android.widget.ListView
 import androidx.fragment.app.Fragment
 
-class CoffeeListFragment : Fragment() {
+class CoffeeListFragment : Fragment(), View.OnClickListener {
 
-    interface OnCoffeeSelectedListener {
-        fun onCoffeeSelected(coffee: String)
-    }
-
-    private var listener: OnCoffeeSelectedListener? = null
-    private lateinit var coffeeList: ListView
-
-    private val coffees = listOf(
-        "Affogato",
-        "Americano",
-        "Caffe Latte"
-    )
+    private lateinit var coffeeListener: CoffeeListener
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
-        if (context is OnCoffeeSelectedListener) {
-            listener = context
+        if (context is CoffeeListener) {
+            coffeeListener = context
         } else {
-            throw RuntimeException("$context must implement OnCoffeeSelectedListener")
+            throw RuntimeException("MainActivity must implement CoffeeListener")
         }
-        Log.d(TAG, "onAttach CoffeeListFragment")
     }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        Log.d(TAG, "onCreateView CoffeeListFragment")
-        val root = inflater.inflate(R.layout.fragment_coffee_list, container, false)
-        coffeeList = root.findViewById(R.id.coffee_listview)
-
-        val adapter = ArrayAdapter(
-            requireContext(),
-            android.R.layout.simple_list_item_1,
-            coffees
-        )
-        coffeeList.adapter = adapter
-
-        coffeeList.onItemClickListener =
-            AdapterView.OnItemClickListener { _, _, position, _ ->
-                val coffee = coffees[position]
-                listener?.onCoffeeSelected(coffee)
-            }
-
-        return root
+        return inflater.inflate(R.layout.fragment_coffee_list, container, false)
     }
 
-    companion object {
-        private const val TAG = "CoffeeListFragment"
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        val coffeeList = listOf<View>(
+            view.findViewById(R.id.affogato),
+            view.findViewById(R.id.americano),
+            view.findViewById(R.id.latte)
+        )
+
+        coffeeList.forEach {
+            it.setOnClickListener(this)
+        }
+    }
+
+    override fun onClick(v: View?) {
+        v?.let { coffee ->
+            coffeeListener.onSelected(coffee.id)
+        }
     }
 }

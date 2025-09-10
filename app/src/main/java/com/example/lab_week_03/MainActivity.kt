@@ -1,26 +1,51 @@
 package com.example.lab_week_03
 
 import android.os.Bundle
-import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
-import androidx.fragment.app.Fragment
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowCompat
+import androidx.core.view.WindowInsetsCompat
+import androidx.fragment.app.FragmentContainerView
 
-class MainActivity : AppCompatActivity(), CoffeeListFragment.OnCoffeeSelectedListener {
+// interface komunikasi
+interface CoffeeListener {
+    fun onSelected(id: Int)
+}
 
+class MainActivity : AppCompatActivity(), CoffeeListener {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        enableEdgeToEdge()
         setContentView(R.layout.activity_main)
-        Log.d(TAG, "onCreate MainActivity")
+
+        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.fragment_container)) { v, insets ->
+            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
+            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
+            insets
+        }
+
+        // tambahkan CoffeeListFragment pertama kali
+        if (savedInstanceState == null) {
+            findViewById<FragmentContainerView>(R.id.fragment_container).let { containerLayout ->
+                val listFragment = CoffeeListFragment()
+                supportFragmentManager.beginTransaction()
+                    .add(containerLayout.id, listFragment)
+                    .commit()
+            }
+        }
     }
 
-    override fun onCoffeeSelected(coffee: String) {
-        Log.d(TAG, "Coffee selected: $coffee")
-        val detailFragment =
-            supportFragmentManager.findFragmentById(R.id.fragment_coffee_detail) as CoffeeDetailFragment
-        detailFragment.updateCoffeeDetail(coffee)
+    override fun onSelected(id: Int) {
+        findViewById<FragmentContainerView>(R.id.fragment_container).let { containerLayout ->
+            val detailFragment = CoffeeDetailFragment.newInstance(id)
+            supportFragmentManager.beginTransaction()
+                .replace(containerLayout.id, detailFragment)
+                .addToBackStack(null)
+                .commit()
+        }
     }
+}
 
-    companion object {
-        private const val TAG = "MainActivity"
-    }
+fun AppCompatActivity.enableEdgeToEdge() {
+    WindowCompat.setDecorFitsSystemWindows(window, false)
 }

@@ -1,7 +1,6 @@
 package com.example.lab_week_03
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -10,32 +9,49 @@ import androidx.fragment.app.Fragment
 
 class CoffeeDetailFragment : Fragment() {
 
-    private lateinit var titleTextView: TextView
-    private lateinit var descTextView: TextView
-
-    private val coffeeDetails = mapOf(
-        "Affogato" to "A coffee-based dessert. It usually takes the form of a scoop of vanilla gelato or ice cream topped with a shot of hot espresso.",
-        "Americano" to "A style of coffee prepared by brewing espresso with added hot water, giving it a similar strength but different flavor from brewed coffee.",
-        "Caffe Latte" to "A tall, mild 'milk coffee' (about 150–300 ml). An espresso with steamed milk and only a little milk foam poured over it. Serve in a latte glass or a coffee cup. Flavoured syrup can be added."
-    )
+    private val coffeeTitle: TextView?
+        get() = view?.findViewById(R.id.coffee_title)
+    private val coffeeDesc: TextView?
+        get() = view?.findViewById(R.id.coffee_desc)
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        Log.d(TAG, "onCreateView CoffeeDetailFragment")
-        val root = inflater.inflate(R.layout.fragment_coffee_detail, container, false)
-        titleTextView = root.findViewById(R.id.tv_coffee_title)
-        descTextView = root.findViewById(R.id.tv_coffee_desc)
-        return root
+        return inflater.inflate(R.layout.fragment_coffee_detail, container, false)
     }
 
-    fun updateCoffeeDetail(coffee: String) {
-        titleTextView.text = coffee.uppercase()
-        descTextView.text = coffeeDetails[coffee] ?: "No description available"
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        val coffeeId = arguments?.getInt(COFFEE_ID, 0) ?: 0
+        setCoffeeData(coffeeId)
+    }
+
+    fun setCoffeeData(id: Int) {
+        when (id) {
+            R.id.affogato -> {
+                coffeeTitle?.text = getString(R.string.affogato_title)
+                coffeeDesc?.text = getString(R.string.affogato_desc)
+            }
+            R.id.americano -> {
+                coffeeTitle?.text = getString(R.string.americano_title)
+                coffeeDesc?.text = getString(R.string.americano_desc)
+            }
+            R.id.latte -> {
+                coffeeTitle?.text = getString(R.string.latte_title)
+                coffeeDesc?.text = getString(R.string.latte_desc)
+            }
+        }
     }
 
     companion object {
-        private const val TAG = "CoffeeDetailFragment"
+        private const val COFFEE_ID = "COFFEE_ID"
+
+        fun newInstance(coffeeId: Int) =
+            CoffeeDetailFragment().apply {
+                arguments = Bundle().apply {
+                    putInt(COFFEE_ID, coffeeId)
+                }
+            }
     }
 }
