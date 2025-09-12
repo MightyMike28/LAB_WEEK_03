@@ -1,49 +1,43 @@
 package com.example.lab_week_03
 
-import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ArrayAdapter
+import android.widget.ListView
+import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
+import androidx.navigation.fragment.findNavController
 
-class CoffeeListFragment : Fragment(), View.OnClickListener {
+class CoffeeListFragment : Fragment() {
 
-    private lateinit var coffeeListener: CoffeeListener
-
-    override fun onAttach(context: Context) {
-        super.onAttach(context)
-        if (context is CoffeeListener) {
-            coffeeListener = context
-        } else {
-            throw RuntimeException("MainActivity must implement CoffeeListener")
-        }
-    }
+    private lateinit var coffeeList: ListView
+    private val coffees = listOf("Affogato", "Americano", "Caffe Latte")
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        return inflater.inflate(R.layout.fragment_coffee_list, container, false)
-    }
+        val root = inflater.inflate(R.layout.fragment_coffee_list, container, false)
+        coffeeList = root.findViewById(R.id.coffee_listview)
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-
-        val coffeeList = listOf<View>(
-            view.findViewById(R.id.affogato),
-            view.findViewById(R.id.americano),
-            view.findViewById(R.id.latte)
+        val adapter = ArrayAdapter(
+            requireContext(),
+            android.R.layout.simple_list_item_1,
+            coffees
         )
+        coffeeList.adapter = adapter
 
-        coffeeList.forEach {
-            it.setOnClickListener(this)
+        coffeeList.setOnItemClickListener { _, _, position, _ ->
+            val coffee = coffees[position]
+            val bundle = bundleOf("coffeeName" to coffee)
+            findNavController().navigate(
+                R.id.action_coffeeListFragment_to_coffeeDetailFragment,
+                bundle
+            )
         }
-    }
 
-    override fun onClick(v: View?) {
-        v?.let { coffee ->
-            coffeeListener.onSelected(coffee.id)
-        }
+        return root
     }
 }

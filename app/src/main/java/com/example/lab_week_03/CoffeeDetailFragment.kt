@@ -9,49 +9,35 @@ import androidx.fragment.app.Fragment
 
 class CoffeeDetailFragment : Fragment() {
 
-    private val coffeeTitle: TextView?
-        get() = view?.findViewById(R.id.coffee_title)
-    private val coffeeDesc: TextView?
-        get() = view?.findViewById(R.id.coffee_desc)
+    private lateinit var titleTextView: TextView
+    private lateinit var descTextView: TextView
+
+    private val coffeeDetails = mapOf(
+        "Affogato" to "Espresso poured on a vanilla ice cream. Served in a cappuccino cup.",
+        "Americano" to "Espresso with added hot water (100–120 ml). Served in a normal coffee cup.",
+        "Caffe Latte" to "Espresso with steamed milk and a little milk foam (150–300 ml). Served in a latte glass or coffee cup."
+    )
+
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        return inflater.inflate(R.layout.fragment_coffee_detail, container, false)
+        val root = inflater.inflate(R.layout.fragment_coffee_detail, container, false)
+        titleTextView = root.findViewById(R.id.tv_coffee_title)
+        descTextView = root.findViewById(R.id.tv_coffee_desc)
+        return root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val coffeeId = arguments?.getInt(COFFEE_ID, 0) ?: 0
-        setCoffeeData(coffeeId)
-    }
-
-    fun setCoffeeData(id: Int) {
-        when (id) {
-            R.id.affogato -> {
-                coffeeTitle?.text = getString(R.string.affogato_title)
-                coffeeDesc?.text = getString(R.string.affogato_desc)
-            }
-            R.id.americano -> {
-                coffeeTitle?.text = getString(R.string.americano_title)
-                coffeeDesc?.text = getString(R.string.americano_desc)
-            }
-            R.id.latte -> {
-                coffeeTitle?.text = getString(R.string.latte_title)
-                coffeeDesc?.text = getString(R.string.latte_desc)
-            }
+        val coffeeName = arguments?.getString("coffeeName")
+        if (coffeeName != null) {
+            titleTextView.text = coffeeName.uppercase()
+            descTextView.text = coffeeDetails[coffeeName] ?: "No description available"
+        } else {
+            titleTextView.text = "SELECT A COFFEE"
+            descTextView.text = ""
         }
-    }
-
-    companion object {
-        private const val COFFEE_ID = "COFFEE_ID"
-
-        fun newInstance(coffeeId: Int) =
-            CoffeeDetailFragment().apply {
-                arguments = Bundle().apply {
-                    putInt(COFFEE_ID, coffeeId)
-                }
-            }
     }
 }

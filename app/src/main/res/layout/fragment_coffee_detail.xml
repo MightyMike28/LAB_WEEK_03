@@ -3,27 +3,21 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:padding="20dp">
+    android:padding="16dp">
 
     <TextView
-        android:id="@+id/coffee_title"
-        android:layout_width="match_parent"
+        android:id="@+id/tv_coffee_title"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:gravity="center"
+        android:text="COFFEE TITLE"
         android:textStyle="bold"
         android:textSize="20sp"
-        android:text="Select a coffee from the list above" />
-
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:layout_marginVertical="20dp"
-        android:background="?android:attr/dividerVertical" />
+        android:paddingBottom="12dp"/>
 
     <TextView
-        android:id="@+id/coffee_desc"
+        android:id="@+id/tv_coffee_desc"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:gravity="center"
-        android:text="" />
+        android:text="Coffee description"
+        android:textSize="16sp"/>
 </LinearLayout>
