@@ -13,7 +13,13 @@ import androidx.navigation.fragment.findNavController
 class CoffeeListFragment : Fragment() {
 
     private lateinit var coffeeList: ListView
-    private val coffees = listOf("Affogato", "Americano", "Caffe Latte")
+    private val coffees = listOf(
+        "Affogato",
+        "Americano",
+        "Caffe Latte",
+        "Cappuccino",
+        "Espresso"
+    )
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
